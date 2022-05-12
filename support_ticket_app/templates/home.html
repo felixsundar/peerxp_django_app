@@ -1,1 +1,16 @@
-<p>this is home</p>
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+<h2>Welcome</h2>
+
+<a href="{% url 'newticket' %}"><button>Add New Ticket</button></a>
+<br><br>
+<a href="{% url 'mytickets' %}"><button>My Tickets</button></a>
+
+{% endblock %}

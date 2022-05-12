@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
+
+from support_ticket_app.forms import NewTicketForm
 
 # Create your views here.
 
@@ -22,7 +25,15 @@ def logoutView(request):
 
 @login_required
 def newticketView(request):
-    pass
+    if request.method == 'POST':
+        form = NewTicketForm(request.POST)
+        if form.is_valid():
+            messages.success(request, 'New Ticket has been added successfully.')
+            return redirect('index')
+    else:
+        form = NewTicketForm()
+    context = { 'form': form }
+    return render(request, 'newticket.html', context)
 
 
 @login_required

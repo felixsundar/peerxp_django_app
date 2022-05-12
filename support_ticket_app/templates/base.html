@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Support Ticket</title>
+</head>
+
+<body>
+
+    <div>
+
+        <a href="{% url 'index' %}">Support Ticket</a>
+
+        {% if request.user.is_authenticated %}
+        <div class="nav-item">
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <div>
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+
+</html>
