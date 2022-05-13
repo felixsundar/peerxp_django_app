@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'peerxp_django_app.wsgi.application'
 DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.postgresql',
-                'NAME': 'peerxp_app_db',
+                'NAME': 'support_ticket_db',
                 'USER': 'postgres',
                 'PASSWORD': 'uygfu7@Gfe',
                 'HOST': 'localhost',
@@ -137,9 +137,18 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTHENTICATION_BACKENDS = ['support_ticket_app.views.MyUserBackend']
+
 LOGIN_URL = 'login'
 
 LOGIN_REDIRECT_URL = 'index'
 
 LOGOUT_REDIRECT_URL = 'index'
 
+ZOHO_API_TOKEN_ID = 'zoho_token'
+
+ZOHO_TICKETS_API_URL = 'https://desk.zoho.in/api/v1/tickets'
+
+ZOHO_REFRESH_TOKEN_URL = 'https://accounts.zoho.in/oauth/v2/token'
+
+ZOHO_API_ORG_ID = '877646557'

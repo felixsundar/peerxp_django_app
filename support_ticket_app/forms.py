@@ -1,6 +1,10 @@
 from django import forms
 
 class NewTicketForm(forms.Form):
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'] = forms.CharField(label='Name', initial=user.first_name)
+        self.fields['email'] = forms.EmailField(label='Email', initial=user.email)
 
     crushUsername = forms.CharField(label='Instagram Username of your crush', max_length=255, required=True)
     crushNickname = forms.CharField(label='Nickname for your crush', max_length=255, required=False)
