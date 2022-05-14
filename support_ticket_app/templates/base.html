@@ -6,24 +6,22 @@
 </head>
 
 <body>
-
+<center>
     <div>
 
-        <a href="{% url 'index' %}">Support Ticket</a>
-
+        <a href="{% url 'index' %}">Support Ticket Home</a><br>
         {% if request.user.is_authenticated %}
-        <div class="nav-item">
-            <a href="{% url 'logout' %}">Logout</a>
-        </div>
+        <p>Logged in as {{request.user.first_name}}</p>
+        <a href="{% url 'logout' %}">Logout</a>
         {% endif %}
-
+        <br><br>
     </div>
 
     <div>
         {% block content %}
         {% endblock %}
     </div>
-
+</center>
 </body>
 
 </html>

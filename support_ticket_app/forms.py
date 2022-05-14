@@ -3,21 +3,20 @@ from django import forms
 class NewTicketForm(forms.Form):
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['name'] = forms.CharField(label='Name', initial=user.first_name)
-        self.fields['email'] = forms.EmailField(label='Email', initial=user.email)
+        self.fields['contact'] = forms.CharField(label='Contact Name', initial=user.first_name+' '+user.last_name)
+        self.fields['email'] = forms.EmailField(label='Contact Email', initial=user.email)
 
-    crushUsername = forms.CharField(label='Instagram Username of your crush', max_length=255, required=True)
-    crushNickname = forms.CharField(label='Nickname for your crush', max_length=255, required=False)
-    crushMessage = forms.CharField(label='Your Message', max_length=3000, required=False, widget=forms.Textarea)
-    whomToInform = forms.ChoiceField(
-        label='Who should be informed, if matched?',
-        choices=[(1, 'Choose at random'), (2, 'Inform my crush')],
-        initial=1,
-        widget=forms.RadioSelect
+    departmentId = forms.ChoiceField(
+        label='Department',
+        choices=[(74304000000010772, 'PeerXP Test'), (74304000000129045, 'Customer Support'), (74304000000135307, 'Human Resource')],
+        widget=forms.Select
+    )
+    category = forms.CharField(label='Category', max_length=255, required=True) 
+    subject = forms.CharField(label='Subject', max_length=255, required=True)
+    description = forms.CharField(label='Description', max_length=3000, required=False, widget=forms.Textarea)
+    priority = forms.ChoiceField(
+        label='Priority',
+        choices=[('Low','Low'), ('Medium','Medium'), ('High','High')],
+        widget=forms.Select
     )
 
-    def clean_crushUsername(self):
-        field = self.cleaned_data['field']
-        if not field:
-            raise forms.ValidationError('Name can contain only alphabets and spaces.')
-        return field

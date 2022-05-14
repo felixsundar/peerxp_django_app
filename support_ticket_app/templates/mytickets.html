@@ -2,13 +2,45 @@
 
 {% block content %}
 
-{% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
-        {% endfor %}
-        {% endif %}
-
         <h2>My Tickets</h2>
         
+        {% if not fetched %}
+                <p>Failed to fetch Tickets!</p>
+        {% else %}
+                {% for ticket in data %}
+                <table>        
+                <tr>
+                                <td><b>Subject: </b></td>
+                                <td>{{ticket.subject}}</td>
+                        </tr>
+                        <tr>
+                                <td><b>Department ID: </b></td>
+                                <td>{{ticket.departmentId}}</td>
+                        </tr>
+                        <tr>
+                                <td><b>Category: </b></td>
+                                <td>{{ticket.category}}</td>
+                        </tr>
+                        <tr>
+                                <td><b>Status: </b></td>
+                                <td>{{ticket.status}}</td>
+                        </tr>
+                        <tr>
+                                <td><b>Priority: </b></td>
+                                <td>{{ticket.priority}}</td>
+                        </tr>
+                        <tr>
+                                <td><b>Contact: </b></td>
+                                <td>{{ticket.contactId}}</td>
+                        </tr>
+                        <tr>
+                                <td><b>Email: </b></td>
+                                <td>{{ticket.email}}</td>
+                        </tr>
+                </table>
+                <br><br><br>
+                {% endfor %}
+        
+        {% endif %}
 
 {% endblock %}

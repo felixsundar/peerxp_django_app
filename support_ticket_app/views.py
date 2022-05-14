@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timezone
+import json
 import requests
 from django.conf import settings
 from django.shortcuts import render, redirect
@@ -59,7 +60,7 @@ def logoutView(request):
 @login_required
 def newticketView(request):
     if request.method == 'POST':
-        form = NewTicketForm(request.POST)
+        form = NewTicketForm(request.user, request.POST)
         if form.is_valid():
             if addNewTicket(form.cleaned_data):
                 messages.success(request, 'New Ticket has been added successfully!')
@@ -73,10 +74,10 @@ def newticketView(request):
 
 @login_required
 def myticketsView(request):
-    header = getRequestHeader()
+    headers = getRequestHeader()
     context = {'fetched':False}
-    if header != False:
-        r = requests.get(settings.ZOHO_TICKETS_API_URL, header=header)
+    if headers != False:
+        r = requests.get(settings.ZOHO_TICKETS_API_URL, headers=headers)
         if r.status_code == requests.codes.ok:
             context['fetched'] = True
             context['data'] = r.json()['data']
@@ -84,12 +85,16 @@ def myticketsView(request):
     
 
 def addNewTicket(data):
-    header = getRequestHeader()
-    if not header:
+    headers = getRequestHeader()
+    if not headers:
         return False
-    r = requests.post(settings.ZOHO_TICKETS_API_URL, data=data, header=header)
+    r = requests.post(settings.ZOHO_TICKETS_API_URL, data=data, headers=headers)
     if r.status_code == requests.codes.ok:
         return True
+    # print('statuscode\n\n\n'+str(r.status_code))
+    # print('errordetails\n\n\n'+str(r.json()))
+    # print('my headers\n\n\n'+str(r.request.headers))
+    print('my body\n\n\n'+str(r.request.body))
     return False
 
 def getRequestHeader():
@@ -101,7 +106,8 @@ def getRequestHeader():
         return False
     header = {
         'orgId':settings.ZOHO_API_ORGID,
-        'Authorization':'Zoho-oauthtoken '+token.accessToken
+        'Authorization':'Zoho-oauthtoken '+token.accessToken,
+        'Content-Type':'application/json;charset=UTF-8'
     }
     return header
     

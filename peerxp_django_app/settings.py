@@ -121,7 +121,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -151,4 +151,4 @@ ZOHO_TICKETS_API_URL = 'https://desk.zoho.in/api/v1/tickets'
 
 ZOHO_REFRESH_TOKEN_URL = 'https://accounts.zoho.in/oauth/v2/token'
 
-ZOHO_API_ORG_ID = '877646557'
+ZOHO_API_ORGID = '60014575325'

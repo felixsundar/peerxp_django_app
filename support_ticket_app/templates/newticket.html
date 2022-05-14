@@ -4,11 +4,50 @@
 
 {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
+        <b>{{ message }}</b><br>
         {% endfor %}
         {% endif %}
 
         <h2>Add New Ticket</h2>
-        
+        <form class="container" method="POST">
+                {% csrf_token %}
+                <div>
+                        <b>Contact Name</b><br>
+                        {{ form.contact}}<br>
+                        {{ form.contact.errors }}<br>
+                </div>
+                <div>
+                        <b>Email</b><br>
+                        {{ form.email}}<br>
+                        {{ form.email.errors }}<br>
+                </div>
+                <div>
+                        <b>Subject</b><br>
+                        {{ form.subject}}<br>
+                        {{ form.subject.errors }}<br>
+                </div>
+                <div>
+                        <b>Department Id</b><br>
+                        {{ form.departmentId}}<br>
+                        {{ form.departmentId.errors }}<br>
+                </div>
+                <div>
+                        <b>Category</b><br>
+                        {{ form.category}}<br>
+                        {{ form.category.errors }}<br>
+                </div>
+                <div>
+                        <b>Description</b><br>
+                        {{ form.description}}<br>
+                        {{ form.description.errors }}<br>
+                </div>
+                <div>
+                        <b>Priority</b><br>
+                        {{ form.priority}}<br>
+                        {{ form.priority.errors }}<br>
+                </div>
+                <br>
+                <input type="submit" value="Submit Ticket">
+        </form>
 
 {% endblock %}

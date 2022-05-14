@@ -4,10 +4,10 @@
 
 {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
+        <b>{{ message }}</b><br>
         {% endfor %}
         {% endif %}
-<h2>Welcome</h2>
+<h1>Welcome</h1>
 
 <a href="{% url 'newticket' %}"><button>Add New Ticket</button></a>
 <br><br>
