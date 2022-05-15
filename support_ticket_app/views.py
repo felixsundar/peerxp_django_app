@@ -85,10 +85,14 @@ def myticketsView(request):
     
 
 def addNewTicket(data):
+    data['contact']={
+        'lastName':data.pop('lastName'), 
+        'email':data.pop('email')
+    }
     headers = getRequestHeader()
     if not headers:
         return False
-    r = requests.post(settings.ZOHO_TICKETS_API_URL, data=data, headers=headers)
+    r = requests.post(settings.ZOHO_TICKETS_API_URL, json=data, headers=headers)
     if r.status_code == requests.codes.ok:
         return True
     # print('statuscode\n\n\n'+str(r.status_code))

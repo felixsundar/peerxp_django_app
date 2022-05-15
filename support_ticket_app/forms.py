@@ -3,8 +3,8 @@ from django import forms
 class NewTicketForm(forms.Form):
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['contact'] = forms.CharField(label='Contact Name', initial=user.first_name+' '+user.last_name)
-        self.fields['email'] = forms.EmailField(label='Contact Email', initial=user.email)
+        self.fields['lastName'] = forms.CharField(label='Last Name', initial=user.last_name)
+        self.fields['email'] = forms.EmailField(label='Email', initial=user.email)
 
     departmentId = forms.ChoiceField(
         label='Department',

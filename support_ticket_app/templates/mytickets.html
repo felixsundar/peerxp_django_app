@@ -8,6 +8,8 @@
 <p>Failed to fetch Tickets!</p>
 {% else %}
 {% for ticket in data %}
+<hr>
+<br>
 <table>
         <tr>
                 <td><b>Ticket ID: </b></td>
@@ -37,12 +39,8 @@
                 <td><b>Contact: </b></td>
                 <td>{{ticket.contactId}}</td>
         </tr>
-        <tr>
-                <td><b>Email: </b></td>
-                <td>{{ticket.email}}</td>
-        </tr>
 </table>
-<br><br><br>
+<br>
 {% endfor %}
 
 {% endif %}

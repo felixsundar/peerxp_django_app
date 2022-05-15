@@ -8,13 +8,13 @@
         {% endfor %}
         {% endif %}
 
-        <h2>Add New Ticket</h2>
+        <h2>Add New Ticket</h2><br>
         <form class="container" method="POST">
                 {% csrf_token %}
                 <div>
-                        <b>Contact Name</b><br>
-                        {{ form.contact}}<br>
-                        {{ form.contact.errors }}<br>
+                        <b>Last Name</b><br>
+                        {{ form.lastName}}<br>
+                        {{ form.lastName.errors }}<br>
                 </div>
                 <div>
                         <b>Email</b><br>
@@ -47,7 +47,8 @@
                         {{ form.priority.errors }}<br>
                 </div>
                 <br>
-                <input type="submit" value="Submit Ticket">
+                <input type="submit" class="btn-primary" value="Submit Ticket">
         </form>
+        <br><br>
 
 {% endblock %}

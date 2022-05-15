@@ -7,10 +7,10 @@
         <b>{{ message }}</b><br>
         {% endfor %}
         {% endif %}
-<h1>Welcome</h1>
+<h1>Welcome</h1><br>
 
-<a href="{% url 'newticket' %}"><button>Add New Ticket</button></a>
+<a href="{% url 'newticket' %}"><button class="btn-primary">Add New Ticket</button></a>
 <br><br>
-<a href="{% url 'mytickets' %}"><button>My Tickets</button></a>
+<a href="{% url 'mytickets' %}"><button class="btn-primary">My Tickets</button></a>
 
 {% endblock %}

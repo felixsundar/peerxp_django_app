@@ -3,18 +3,20 @@
 
 <head>
     <title>Support Ticket</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
 <body>
 <center>
-    <div>
+    <div class="pt-3">
 
-        <a href="{% url 'index' %}">Support Ticket Home</a><br>
+        <a href="{% url 'index' %}"><h3>Support Ticket Home</h3></a>
         {% if request.user.is_authenticated %}
-        <p>Logged in as {{request.user.first_name}}</p>
+        <div>Logged in as {{ request.user.last_name }}</div>
         <a href="{% url 'logout' %}">Logout</a>
         {% endif %}
-        <br><br>
+        <br>
+        <hr style="border: 1px solid;">
     </div>
 
     <div>
