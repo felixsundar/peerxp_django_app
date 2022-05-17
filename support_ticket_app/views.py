@@ -1,5 +1,4 @@
-from datetime import datetime, timezone
-import json
+from datetime import datetime
 import requests
 from django.conf import settings
 from django.shortcuts import render, redirect
@@ -9,8 +8,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
+from django.views.decorators.http import require_http_methods
 
-from support_ticket_app.forms import NewTicketForm
+from support_ticket_app.forms import NewTicketForm, EditTicketForm
 from support_ticket_app.models import APIToken
 
 # Create your views here.
@@ -56,24 +56,8 @@ def loginView(request):
 def logoutView(request):
     return LogoutView.as_view()(request)
 
-
 @login_required
-def newticketView(request):
-    if request.method == 'POST':
-        form = NewTicketForm(request.user, request.POST)
-        if form.is_valid():
-            if addNewTicket(form.cleaned_data):
-                messages.success(request, 'New Ticket has been added successfully!')
-                return redirect('index')
-            else:
-                messages.error(request, 'Adding new ticket failed!')
-    else:
-        form = NewTicketForm(request.user)
-    context = { 'form': form }
-    return render(request, 'newticket.html', context)
-
-@login_required
-def myticketsView(request):
+def manageticketsView(request):
     headers = getRequestHeader()
     context = {'fetched':False}
     if headers != False:
@@ -82,7 +66,54 @@ def myticketsView(request):
             context['fetched'] = True
             context['data'] = r.json()['data']
     return render(request, 'mytickets.html', context=context)
-    
+
+@login_required
+@require_http_methods(['POST'])
+def deleteticketView(request, ticketId):
+    if deleteTicket(ticketId):
+        messages.success(request, 'Ticket number '+ticketId+' has been deleted successfully!')
+    else:
+        messages.error(request, 'Deleting ticket number '+ticketId+' failed!')
+    return redirect('managetickets')
+
+@login_required
+def newticketView(request):
+    if request.method == 'POST':
+        form = NewTicketForm(request.user, request.POST)
+        if form.is_valid() and addNewTicket(form.cleaned_data):
+            messages.success(request, 'New Ticket has been added successfully!')
+            return redirect('index')
+        else:
+            messages.error(request, 'Adding new ticket failed!')
+    else:
+        form = NewTicketForm(request.user)
+    context = { 'form': form }
+    return render(request, 'newticket.html', context)
+
+@login_required
+def editticketView(request, ticketId):
+    if request.method == 'POST':
+        form = EditTicketForm(request.POST)
+        if form.is_valid() and editTicket(ticketId, form.cleaned_data):
+            messages.success(request, 'Ticket number '+ticketId+' has been updated successfully!')
+            return redirect('managetickets')
+        else:
+            messages.error(request, 'Updating ticket failed!')
+    else:
+        ticket = getTicket(ticketId)
+        form = False if not ticket else EditTicketForm(ticket)
+    context = { 'form': form }
+    return render(request, 'editticket.html', context)
+
+def deleteTicket(ticketId):
+    headers = getRequestHeader()
+    if not headers:
+        return False
+    data = { 'ticketIds':[ticketId] }
+    r = requests.post(settings.ZOHO_DELETE_TICKET_URL, json=data, headers=headers)
+    if r.status_code == requests.codes.no_content:
+        return True
+    return False
 
 def addNewTicket(data):
     data['contact']={
@@ -95,10 +126,24 @@ def addNewTicket(data):
     r = requests.post(settings.ZOHO_TICKETS_API_URL, json=data, headers=headers)
     if r.status_code == requests.codes.ok:
         return True
-    # print('statuscode\n\n\n'+str(r.status_code))
-    # print('errordetails\n\n\n'+str(r.json()))
-    # print('my headers\n\n\n'+str(r.request.headers))
-    print('my body\n\n\n'+str(r.request.body))
+    return False
+
+def getTicket(ticketId):
+    headers = getRequestHeader()
+    if not headers:
+        return False
+    r = requests.get(settings.ZOHO_TICKETS_API_URL + '/' + ticketId, headers=headers)
+    if r.status_code != requests.codes.ok:
+        return False
+    return r.json()
+
+def editTicket(ticketId, data):
+    headers = getRequestHeader()
+    if not headers:
+        return False
+    r = requests.patch(settings.ZOHO_TICKETS_API_URL + '/' + ticketId, json=data, headers=headers)
+    if r.status_code == requests.codes.ok:
+        return True
     return False
 
 def getRequestHeader():

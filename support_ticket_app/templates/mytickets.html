@@ -2,6 +2,12 @@
 
 {% block content %}
 
+{% if messages %}
+        {% for message in messages %}
+        <b>{{ message }}</b><br>
+        {% endfor %}
+        {% endif %}
+
 <h2>My Tickets</h2>
 
 {% if not fetched %}
@@ -38,6 +44,16 @@
         <tr>
                 <td><b>Contact: </b></td>
                 <td>{{ticket.contactId}}</td>
+        </tr>
+        <tr>
+                <td>
+                        <form method="POST" action="{% url 'deleteticket' ticket.id %}">
+                                {% csrf_token %}
+                                <input class="btn-danger" type="submit" value="Delete" />
+                        </form>
+                        
+                </td>
+                <td><a href="{% url 'editticket' ticket.id %}"><button class="btn-primary">Update</button></a></td>
         </tr>
 </table>
 <br>

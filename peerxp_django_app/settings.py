@@ -149,6 +149,8 @@ ZOHO_API_TOKEN_ID = 'zoho_token'
 
 ZOHO_TICKETS_API_URL = 'https://desk.zoho.in/api/v1/tickets'
 
+ZOHO_DELETE_TICKET_URL = 'https://desk.zoho.in/api/v1/tickets/moveToTrash'
+
 ZOHO_REFRESH_TOKEN_URL = 'https://accounts.zoho.in/oauth/v2/token'
 
 ZOHO_API_ORGID = '60014575325'
