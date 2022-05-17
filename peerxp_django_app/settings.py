@@ -9,19 +9,24 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+
+import environ
 import os
 from pathlib import Path
 
+env = environ.Env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-s!)yh2gce*x-2^bn(+&6%)e+it$lwy1q$qb-ah88s%3u9*pj=n'
-
+SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -74,21 +79,14 @@ WSGI_APPLICATION = 'peerxp_django_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.postgresql',
-                'NAME': 'support_ticket_db',
-                'USER': 'postgres',
-                'PASSWORD': 'uygfu7@Gfe',
-                'HOST': 'localhost',
-                'PORT': '5432',
+                'NAME': env('DB_NAME'),
+                'USER': env('DB_USER'),
+                'PASSWORD': env('DB_PASSWORD'),
+                'HOST': env('DB_HOST'),
+                'PORT': env('DB_PORT'),
             }
         }
 
@@ -145,12 +143,18 @@ LOGIN_REDIRECT_URL = 'index'
 
 LOGOUT_REDIRECT_URL = 'index'
 
-ZOHO_API_TOKEN_ID = 'zoho_token'
+ZOHO_TICKETS_API_URL = env('ZOHO_TICKETS_API_URL')
 
-ZOHO_TICKETS_API_URL = 'https://desk.zoho.in/api/v1/tickets'
+ZOHO_DELETE_TICKET_URL = env('ZOHO_DELETE_TICKET_URL')
 
-ZOHO_DELETE_TICKET_URL = 'https://desk.zoho.in/api/v1/tickets/moveToTrash'
+ZOHO_REFRESH_TOKEN_URL = env('ZOHO_REFRESH_TOKEN_URL')
 
-ZOHO_REFRESH_TOKEN_URL = 'https://accounts.zoho.in/oauth/v2/token'
+ZOHO_API_ORGID = env('ZOHO_API_ORGID')
 
-ZOHO_API_ORGID = '60014575325'
+ZOHO_CLIENT_ID = env('ZOHO_CLIENT_ID')
+
+ZOHO_CLIENT_SECRET = env('ZOHO_CLIENT_SECRET')
+
+ZOHO_TOKEN_SCOPE = env('ZOHO_TOKEN_SCOPE')
+
+ZOHO_REFRESH_TOKEN = env('ZOHO_REFRESH_TOKEN')

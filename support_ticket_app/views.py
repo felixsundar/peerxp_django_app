@@ -11,7 +11,6 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.views.decorators.http import require_http_methods
 
 from support_ticket_app.forms import NewTicketForm, EditTicketForm
-from support_ticket_app.models import APIToken
 
 # Create your views here.
 
@@ -41,6 +40,36 @@ class MyUserBackend(ModelBackend):
         else:
             if user.check_password(password) and self.user_can_authenticate(user):
                 return user
+
+class Token:
+    def __init__(self):
+        self.lastUpdatedTime = datetime.now()
+        self.expiresIn = 0
+    
+    def isValid(self):
+        duration = datetime.now()-self.lastUpdatedTime
+        if duration.seconds >= self.expiresIn:
+            return False
+        return True
+
+    def renew(self):
+        params = {
+        'refresh_token':settings.ZOHO_REFRESH_TOKEN,
+        'client_id':settings.ZOHO_CLIENT_ID,
+        'client_secret':settings.ZOHO_CLIENT_SECRET,
+        'scope':settings.ZOHO_TOKEN_SCOPE,
+        'grant_type':'refresh_token'
+        }
+        r = requests.post(settings.ZOHO_REFRESH_TOKEN_URL, params=params)
+        if r.status_code != requests.codes.ok:
+            return False
+        response = r.json()
+        self.accessToken = response['access_token']
+        self.expiresIn = response['expires_in']
+        self.lastUpdatedTime = datetime.now()
+        return True
+
+token = Token()
 
 @login_required
 def index(request):
@@ -147,39 +176,10 @@ def editTicket(ticketId, data):
     return False
 
 def getRequestHeader():
-    try:
-        token = APIToken.objects.get(tokenID=settings.ZOHO_API_TOKEN_ID)
-    except APIToken.DoesNotExist:
-        return False
-    if not validateToken(token) and not renewToken(token):
-        return False
-    header = {
-        'orgId':settings.ZOHO_API_ORGID,
-        'Authorization':'Zoho-oauthtoken '+token.accessToken,
-        'Content-Type':'application/json;charset=UTF-8'
-    }
-    return header
-    
-def validateToken(token):
-    duration = datetime.now()-token.lastUpdatedTime
-    if duration.seconds > token.expiresIn:
-        return False
-    return True
-
-def renewToken(token):
-    params = {
-        'refresh_token':token.refreshToken,
-        'client_id':token.clientID,
-        'client_secret':token.clientSecret,
-        'scope':token.scope,
-        'grant_type':'refresh_token'
-    }
-    r = requests.post(settings.ZOHO_REFRESH_TOKEN_URL, params=params)
-    if r.status_code != requests.codes.ok:
-        return False
-    response = r.json()
-    token.accessToken = response['access_token']
-    token.expiresIn = response['expires_in']
-    token.lastUpdatedTime = datetime.now()
-    token.save()
-    return True
+    if token.isValid() or token.renew():
+        return {
+            'orgId':settings.ZOHO_API_ORGID,
+            'Authorization':'Zoho-oauthtoken '+token.accessToken,
+            'Content-Type':'application/json;charset=UTF-8'
+        }
+    return False
